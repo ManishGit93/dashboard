@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=AR+One+Sans&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+.bar {
+    fill: #e1e1fc; 
+  }
+  
+  .bar:hover {
+    fill: #0ea5e9; 
+    transition: fill 0.3s; 
+  }
+
+  .xaxis{
+    font-family: 'AR One',;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+  
+  
