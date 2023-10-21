@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
+import AddModal from "./AddModal";
 import toast, { Toaster } from "react-hot-toast";
 
 const UserTable = () => {
   const [data, setData] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [addUser, setAddUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [newUSER, setNewUSER] = useState(null);
 
   const handleEdit = async (item) => {
     setEditingUser(item);
+  };
+
+  const handleAdd = async () => {
+    setAddUser(true);
+  };
+
+  const handlenewAdd = async (newUser) => {
+    setData((prevData) => [...prevData, newUser]);
+    setNewUSER(newUser);
   };
 
   const handleDelete = async (item) => {
@@ -44,13 +56,35 @@ const UserTable = () => {
   };
 
   useEffect(() => {
-    getData();
+      getData();
+    
   }, []);
+
+  useEffect(() => {
+    if (newUSER) {
+      getData();
+    }
+  }, [newUSER]);
 
   return (
     <section className="mt-6 md:flex relative  items-center justify-center gap-6 bg-white rounded-lg">
       {editingUser && (
-        <Modal isOpen={true} onClose={() => setEditingUser(null)} user={editingUser} onEdit={handleEdit} />
+        <Modal
+          title={"Edit User"}
+          isOpen={true}
+          onClose={() => setEditingUser(null)}
+          user={editingUser}
+          onEdit={handleEdit}
+        />
+      )}
+      {addUser && (
+        <AddModal
+          title={"Add User"}
+          isOpen={true}
+          onClose={() => setAddUser(null)}
+          onAdd={handleAdd}
+          updatedData={handlenewAdd}
+        />
       )}
       <table className="min-w-full border-collapse table-auto rounded-lg">
         <thead>
@@ -95,6 +129,9 @@ const UserTable = () => {
                   <td className="border border-gray-300 px-4 py-2">{item.email}</td>
                   <td className="border border-gray-300 px-4 py-2">{item.address}</td>
                   <td className="border border-gray-300 px-4 py-2">
+                    <button onClick={() => handleAdd(item)} className="mr-2 text-green-500">
+                      Add
+                    </button>
                     <button onClick={() => handleEdit(item)} className="mr-2 text-blue-500">
                       Edit
                     </button>

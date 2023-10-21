@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import axios from "axios";
-const Modal = ({ isOpen, onClose, user, onEdit }) => {
-
-  const baseUrl = `https://crudapi-demo1.onrender.com/users`
+const Modal = ({ isOpen, onClose, user, onEdit}) => {
+  const baseUrl = `https://crudapi-demo1.onrender.com/users`;
   const [editedUser, setEditedUser] = useState(user);
 
-  const handleSave = async() => {
-    console.log("model",editedUser?._id)
+  const handleSave = async () => {
+    console.log("model", editedUser?._id);
     onEdit(editedUser);
     onClose();
     const payload = {
-        "firstname":editedUser.firstname ,
-        "lastname": editedUser.lastname,
-        "phone": editedUser.phone,
-        "email": editedUser.email,
-        "address": editedUser.address
+      firstname: editedUser.firstname,
+      lastname: editedUser.lastname,
+      phone: editedUser.phone,
+      email: editedUser.email,
+      address: editedUser.address
+    };
+    try {
+      const resp = await axios.put(`${baseUrl}/${editedUser?._id}`, payload);
+      const respd = await resp.data;
+      console.log("ree", respd);
+    } catch (error) {
+      console.log(error);
     }
-    // return
-    const resp = await axios.put(`${baseUrl}/${editedUser?._id}`,payload)
-    const respd = await resp.data
-    console.log("ree", respd)
   };
 
   return (
@@ -31,7 +33,7 @@ const Modal = ({ isOpen, onClose, user, onEdit }) => {
             <input
               type="text"
               name="firstname"
-              value={editedUser.firstname}
+              value={editedUser?.firstname}
               onChange={(e) => setEditedUser({ ...editedUser, firstname: e.target.value })}
               className="w-full border border-gray-300 p-2 rounded-md my-2"
             />
@@ -39,7 +41,7 @@ const Modal = ({ isOpen, onClose, user, onEdit }) => {
             <input
               type="text"
               name="Lastname"
-              value={editedUser.lastname}
+              value={editedUser?.lastname}
               onChange={(e) => setEditedUser({ ...editedUser, lastname: e.target.value })}
               className="w-full border border-gray-300 p-2 rounded-md my-2"
             />
@@ -47,7 +49,7 @@ const Modal = ({ isOpen, onClose, user, onEdit }) => {
             <input
               type="text"
               name="Phone"
-              value={editedUser.phone}
+              value={editedUser?.phone}
               onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
               className="w-full border border-gray-300 p-2 rounded-md my-2"
             />
