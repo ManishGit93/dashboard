@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-const Modal = ({ isOpen, onClose, user, onEdit}) => {
+import toast, { Toaster } from "react-hot-toast";
+const Modal = ({ isOpen, onClose, user, onEdit }) => {
   const baseUrl = `https://crudapi-demo1.onrender.com/users`;
   const [editedUser, setEditedUser] = useState(user);
 
@@ -9,6 +10,7 @@ const Modal = ({ isOpen, onClose, user, onEdit}) => {
     onEdit(editedUser);
     onClose();
     const payload = {
+      // id:editedUser._id,
       firstname: editedUser.firstname,
       lastname: editedUser.lastname,
       phone: editedUser.phone,
@@ -16,9 +18,10 @@ const Modal = ({ isOpen, onClose, user, onEdit}) => {
       address: editedUser.address
     };
     try {
-      const resp = await axios.put(`${baseUrl}/${editedUser?._id}`, payload);
+      const resp = await axios.post(`${baseUrl}`, payload);
       const respd = await resp.data;
       console.log("ree", respd);
+      toast.success(respd)
     } catch (error) {
       console.log(error);
     }
@@ -51,6 +54,13 @@ const Modal = ({ isOpen, onClose, user, onEdit}) => {
               name="Phone"
               value={editedUser?.phone}
               onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+              className="w-full border border-gray-300 p-2 rounded-md my-2"
+            />
+            <input
+              type="text"
+              name="email"
+              value={editedUser?.email}
+              onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
               className="w-full border border-gray-300 p-2 rounded-md my-2"
             />
             <div className="flex">

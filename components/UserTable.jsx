@@ -13,6 +13,7 @@ const UserTable = () => {
 
   const handleEdit = async (item) => {
     setEditingUser(item);
+    setData((prevData) => [...prevData, item]);
   };
 
   const handleAdd = async () => {
@@ -65,6 +66,14 @@ const UserTable = () => {
       getData();
     }
   }, [newUSER]);
+
+  useEffect(() => {
+    if (editingUser) {
+      getData();
+    }
+  }, [editingUser]);
+
+  
 
   return (
     <section className="mt-6 md:flex relative  items-center justify-center gap-6 bg-white rounded-lg">
