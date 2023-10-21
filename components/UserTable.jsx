@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
+import toast, { Toaster } from "react-hot-toast";
 
 const UserTable = () => {
   const [data, setData] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleEdit = (item) => {
-    // Set the user data you want to edit in the state.
+  const handleEdit = async (item) => {
     setEditingUser(item);
   };
 
-  const handleDelete = (item) => {
-    //
+  const handleDelete = async (item) => {
+    const res = confirm("Are you sure?");
+    if (res === true) {
+      try {
+        const res = await axios.delete(`https://crudapi-demo1.onrender.com/users/${item?._id}`);
+        const resp = await res.data;
+        toast.success(resp);
+        setData((prevData) => prevData.filter((user) => user._id !== item._id));
+      } catch (error) {
+        console.log("Error deleting user:", error);
+      }
+    }
   };
 
-  const handleSubmitEdit = (e) => {
+  const handleSubmitEdit = async (e) => {
     e.preventDefault();
   };
 
@@ -26,6 +37,7 @@ const UserTable = () => {
       const respdata = await resp.data;
       setData(respdata);
       console.log(respdata);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -52,25 +64,59 @@ const UserTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data?.map((item, index) => (
-            <tr key={index}>
-              <td className="border border-gray-300 px-4 py-2">{item.firstname}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.lastname}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.phone}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.email}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.address}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <button onClick={() => handleEdit(item)} className="mr-2 text-blue-500">
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(item)} className="text-red-500">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
+          {loading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                  </td>
+                </tr>
+              ))
+            : data?.map((item, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-300 px-4 py-2">{item.firstname}</td>
+                  <td className="border border-gray-300 px-4 py-2">{item.lastname}</td>
+                  <td className="border border-gray-300 px-4 py-2">{item.phone}</td>
+                  <td className="border border-gray-300 px-4 py-2">{item.email}</td>
+                  <td className="border border-gray-300 px-4 py-2">{item.address}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <button onClick={() => handleEdit(item)} className="mr-2 text-blue-500">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(item)} className="text-red-500">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </table>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          className: "",
+          duration: 5000
+        }}
+      />
     </section>
   );
 };

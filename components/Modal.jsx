@@ -1,11 +1,25 @@
 import React, { useState } from "react";
-
+import axios from "axios";
 const Modal = ({ isOpen, onClose, user, onEdit }) => {
+
+  const baseUrl = `https://crudapi-demo1.onrender.com/users`
   const [editedUser, setEditedUser] = useState(user);
 
-  const handleSave = () => {
+  const handleSave = async() => {
+    console.log("model",editedUser?._id)
     onEdit(editedUser);
     onClose();
+    const payload = {
+        "firstname":editedUser.firstname ,
+        "lastname": editedUser.lastname,
+        "phone": editedUser.phone,
+        "email": editedUser.email,
+        "address": editedUser.address
+    }
+    // return
+    const resp = await axios.put(`${baseUrl}/${editedUser?._id}`,payload)
+    const respd = await resp.data
+    console.log("ree", respd)
   };
 
   return (
